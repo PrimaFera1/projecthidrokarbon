@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Edukasi Tata Nama Hidrokarbon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .score-board {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .score-item {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        
+        .game-area {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .level-indicator {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .molecule-display {
+            background: #f8f9fa;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .molecule-structure {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8em;
+            line-height: 1.5;
+            color: #2c3e50;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .molecule-name {
+            font-size: 2em;
+            color: #34495e;
+            font-weight: bold;
+        }
+        
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e67e22;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .input-section {
+            margin: 30px 0;
+        }
+        
+        .input-label {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .answer-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 3px solid #bdc3c7;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .button-group {
+            margin: 30px 0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-hint {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+            color: white;
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.3);
+        }
+        
+        .btn-hint:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4);
+        }
+        
+        .hint-display {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feedback.correct {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            border: 3px solid #27ae60;
+        }
+        
+        .feedback.incorrect {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: 3px solid #c0392b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .start-screen, .end-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .start-screen h2, .end-screen h2 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .start-screen p, .end-screen p {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .final-score {
+            font-size: 3em;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .score-board {
+                position: static;
+                margin: 20px auto;
+                display: inline-block;
+            }
+            
+            .molecule-structure {
+                font-size: 1.4em;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🧪 ChemName Quest</h1>
+            <p class="subtitle">Game Edukasi Tata Nama Senyawa Hidrokarbon</p>
+            <div class="score-board">
+                <div class="score-item">Skor: <span id="score">0</span></div>
+                <div class="score-item">Benar: <span id="correct">0</span></div>
+                <div class="score-item">Salah: <span id="wrong">0</span></div>
+            </div>
+        </div>
+        
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <h2>🎯 Selamat Datang!</h2>
+            <p>Uji kemampuan Anda dalam mengenal tata nama senyawa hidrokarbon (alkana, alkena, dan alkuna) berdasarkan struktur molekulnya.</p>
+            <p><strong>Cara bermain:</strong></p>
+            <p>• Lihat struktur molekul yang ditampilkan<br>
+               • Masukkan nama IUPAC yang benar<br>
+               • Dapatkan poin untuk setiap jawaban benar<br>
+               • Tingkat kesulitan akan meningkat seiring progres</p>
+            <button class="btn btn-primary" onclick="startGame()">🚀 Mulai Bermain</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="level-indicator">
+                Level <span id="currentLevel">1</span> - <span id="levelName">Alkana Sederhana</span>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="molecule-display">
+                <div class="timer" id="timer">30</div>
+                <div class="molecule-structure" id="moleculeStructure"></div>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-label">Masukkan nama IUPAC:</div>
+                <input type="text" class="answer-input" id="answerInput" placeholder="Contoh: metana, etena, propuna..." autocomplete="off">
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="submitAnswer()">✓ Submit Jawaban</button>
+                <button class="btn btn-secondary" onclick="skipQuestion()">⏭️ Lewati</button>
+                <button class="btn btn-hint" onclick="showHint()" id="hintBtn">💡 Hint</button>
+            </div>
+            
+            <div class="hint-display hidden" id="hintDisplay"></div>
+            
+            <div class="feedback hidden" id="feedback"></div>
+        </div>
+        
+        <!-- End Screen -->
+        <div id="endScreen" class="hidden end-screen">
+            <h2>🎉 Permainan Selesai!</h2>
+            <div class="final-score" id="finalScore">0</div>
+            <p id="finalMessage"></p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="restartGame()">🔄 Main Lagi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game data - Extended with more questions for better learning experience
+        const questions = [
+            // Level 1 - Alkana Sederhana (Rantai Lurus)
+            { level: 1, structure: "CH₄", answer: "metana", type: "alkana", hint: "Hidrokarbon dengan 1 atom karbon" },
+            { level: 1, structure: "CH₃-CH₃", answer: "etana", type: "alkana", hint: "Hidrokarbon dengan 2 atom karbon" },
+            { level: 1, structure: "CH₃-CH₂-CH₃", answer: "propana", type: "alkana", hint: "Hidrokarbon dengan 3 atom karbon" },
+            { level: 1, structure: "CH₃-CH₂-CH₂-CH₃", answer: "butana", type: "alkana", hint: "Hidrokarbon dengan 4 atom karbon" },
+            { level: 1, structure: "CH₃-CH₂-CH₂-CH₂-CH₃", answer: "pentana", type: "alkana", hint: "Hidrokarbon dengan 5 atom karbon" },
+            { level: 1, structure: "CH₃-CH₂-CH₂-CH₂-CH₂-CH₃", answer: "heksana", type: "alkana", hint: "Hidrokarbon dengan 6 atom karbon" },
+            
+            // Level 2 - Alkena Sederhana (Ikatan Rangkap 2)
+            { level: 2, structure: "CH₂=CH₂", answer: "etena", type: "alkena", hint: "Alkena dengan 2 atom karbon" },
+            { level: 2, structure: "CH₃-CH=CH₂", answer: "propena", type: "alkena", hint: "Alkena dengan 3 atom karbon" },
+            { level: 2, structure: "CH₃-CH₂-CH=CH₂", answer: "1-butena", type: "alkena", hint: "Ikatan rangkap di posisi 1" },
+            { level: 2, structure: "CH₃-CH=CH-CH₃", answer: "2-butena", type: "alkena", hint: "Ikatan rangkap di posisi 2" },
+            { level: 2, structure: "CH₃-CH₂-CH₂-CH=CH₂", answer: "1-pentena", type: "alkena", hint: "Pentena dengan ikatan rangkap di ujung" },
+            { level: 2, structure: "CH₃-CH₂-CH=CH-CH₃", answer: "2-pentena", type: "alkena", hint: "Pentena dengan ikatan rangkap di tengah" },
+            
+            // Level 3 - Alkuna Sederhana (Ikatan Rangkap 3)
+            { level: 3, structure: "CH≡CH", answer: "etuna", type: "alkuna", hint: "Alkuna dengan 2 atom karbon (asetilena)" },
+            { level: 3, structure: "CH₃-C≡CH", answer: "propuna", type: "alkuna", hint: "Alkuna dengan 3 atom karbon" },
+            { level: 3, structure: "CH₃-CH₂-C≡CH", answer: "1-butuna", type: "alkuna", hint: "Ikatan rangkap tiga di posisi 1" },
+            { level: 3, structure: "CH₃-C≡C-CH₃", answer: "2-butuna", type: "alkuna", hint: "Ikatan rangkap tiga di posisi 2" },
+            { level: 3, structure: "CH₃-CH₂-CH₂-C≡CH", answer: "1-pentuna", type: "alkuna", hint: "Pentuna dengan ikatan rangkap tiga di ujung" },
+            { level: 3, structure: "CH₃-CH₂-C≡C-CH₃", answer: "2-pentuna", type: "alkuna", hint: "Pentuna dengan ikatan rangkap tiga di tengah" },
+            
+            // Level 4 - Alkana Bercabang (Substitusi)
+            { level: 4, structure: "CH₃-CH(CH₃)-CH₃", answer: "2-metilpropana", type: "alkana bercabang", hint: "Propana dengan cabang metil di C-2" },
+            { level: 4, structure: "CH₃-CH(CH₃)-CH₂-CH₃", answer: "2-metilbutana", type: "alkana bercabang", hint: "Butana dengan cabang metil di C-2" },
+            { level: 4, structure: "CH₃-CH₂-CH(CH₃)-CH₃", answer: "2-metilbutana", type: "alkana bercabang", hint: "Sama dengan isomer sebelumnya" },
+            { level: 4, structure: "CH₃-CH(CH₃)-CH(CH₃)-CH₃", answer: "2,3-dimetilbutana", type: "alkana bercabang", hint: "Dua cabang metil di C-2 dan C-3" },
+            { level: 4, structure: "CH₃-C(CH₃)₂-CH₃", answer: "2,2-dimetilpropana", type: "alkana bercabang", hint: "Dua cabang metil di C-2 yang sama" },
+            { level: 4, structure: "CH₃-CH(CH₃)-CH₂-CH₂-CH₃", answer: "2-metilpentana", type: "alkana bercabang", hint: "Pentana dengan cabang metil di C-2" },
+            { level: 4, structure: "CH₃-CH₂-CH(CH₃)-CH₂-CH₃", answer: "3-metilpentana", type: "alkana bercabang", hint: "Pentana dengan cabang metil di C-3" },
+            
+            // Level 5 - Senyawa Kompleks (Campuran)
+            { level: 5, structure: "CH₃-CH(CH₃)-CH=CH₂", answer: "3-metil-1-butena", type: "alkena bercabang", hint: "Alkena bercabang dengan metil di C-3" },
+            { level: 5, structure: "CH₃-CH₂-CH(CH₃)-C≡CH", answer: "3-metil-1-pentuna", type: "alkuna bercabang", hint: "Alkuna bercabang dengan metil di C-3" },
+            { level: 5, structure: "CH₃-CH(C₂H₅)-CH₂-CH₃", answer: "3-metilpentana", type: "alkana bercabang", hint: "Etil = C₂H₅, sama dengan metil" },
+            { level: 5, structure: "CH₃-CH=CH-CH(CH₃)-CH₃", answer: "4-metil-2-pentena", type: "alkena bercabang", hint: "Alkena dengan cabang metil di C-4" },
+            { level: 5, structure: "CH₃-CH₂-C(CH₃)₂-CH₂-CH₃", answer: "3,3-dimetilpentana", type: "alkana bercabang", hint: "Dua metil di C-3 yang sama" },
+            { level: 5, structure: "CH₃-CH(CH₃)-CH₂-CH(CH₃)-CH₃", answer: "2,4-dimetilpentana", type: "alkana bercabang", hint: "Dua cabang metil di C-2 dan C-4" },
+            { level: 5, structure: "CH₃-CH(CH₃)-C≡C-CH₃", answer: "4-metil-2-pentuna", type: "alkuna bercabang", hint: "Alkuna dengan cabang metil" },
+            { level: 5, structure: "(CH₃)₃C-CH₂-CH₃", answer: "2,2-dimetilpropana", type: "alkana bercabang", hint: "Struktur tersier dengan tiga metil" }
+        ];
+        
+        // Game state - Enhanced with hint system
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let currentLevel = 1;
+        let timer = 30;
+        let timerInterval;
+        let gameActive = false;
+        let shuffledQuestions = [];
+        let hintUsed = false;
+        
+        // Level configurations - Enhanced with more detailed progression
+        const levelConfig = {
+            1: { name: "Alkana Sederhana", timeLimit: 30, color: "#27ae60", description: "Hidrokarbon jenuh rantai lurus" },
+            2: { name: "Alkena Sederhana", timeLimit: 35, color: "#3498db", description: "Hidrokarbon tak jenuh dengan ikatan rangkap 2" },
+            3: { name: "Alkuna Sederhana", timeLimit: 35, color: "#9b59b6", description: "Hidrokarbon tak jenuh dengan ikatan rangkap 3" },
+            4: { name: "Senyawa Bercabang", timeLimit: 45, color: "#e67e22", description: "Hidrokarbon dengan gugus cabang alkil" },
+            5: { name: "Tantangan Master", timeLimit: 50, color: "#e74c3c", description: "Kombinasi kompleks semua jenis hidrokarbon" }
+        };
+        
+        // Initialize game
+        function initGame() {
+            shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            currentLevel = 1;
+            updateDisplay();
+        }
+        
+        // Start game
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('endScreen').classList.add('hidden');
+            initGame();
+            loadQuestion();
+            gameActive = true;
+        }
+        
+        // Load current question - Enhanced with hint system
+        function loadQuestion() {
+            if (currentQuestionIndex >= shuffledQuestions.length) {
+                endGame();
+                return;
+            }
+            
+            const question = shuffledQuestions[currentQuestionIndex];
+            currentLevel = question.level;
+            hintUsed = false;
+            
+            // Update level display
+            document.getElementById('currentLevel').textContent = currentLevel;
+            document.getElementById('levelName').textContent = levelConfig[currentLevel].name;
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / shuffledQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Display molecule structure
+            document.getElementById('moleculeStructure').textContent = question.structure;
+            
+            // Clear previous input, feedback, and hint
+            document.getElementById('answerInput').value = '';
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('hintDisplay').classList.add('hidden');
+            document.getElementById('hintBtn').style.display = 'inline-block';
+            
+            // Start timer
+            timer = levelConfig[currentLevel].timeLimit;
+            startTimer();
+            
+            // Focus on input
+            document.getElementById('answerInput').focus();
+        }
+        
+        // Start timer
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timer--;
+                updateTimerDisplay();
+                
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    submitAnswer(true); // Auto-submit when time runs out
+                }
+            }, 1000);
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timer;
+            
+            if (timer <= 10) {
+                timerElement.style.background = '#e74c3c';
+                timerElement.style.animation = 'pulse 0.5s infinite';
+            } else {
+                timerElement.style.background = '#e67e22';
+                timerElement.style.animation = 'pulse 1s infinite';
+            }
+        }
+        
+        // Submit answer
+        function submitAnswer(timeUp = false) {
+            if (!gameActive) return;
+            
+            clearInterval(timerInterval);
+            
+            const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase();
+            const correctAnswer = shuffledQuestions[currentQuestionIndex].answer.toLowerCase();
+            const feedbackElement = document.getElementById('feedback');
+            
+            let isCorrect = false;
+            
+            if (!timeUp && userAnswer !== '') {
+                // Check for exact match or common variations
+                const variations = generateAnswerVariations(correctAnswer);
+                isCorrect = variations.some(variation => 
+                    userAnswer === variation.toLowerCase() || 
+                    userAnswer.replace(/[-\s]/g, '') === variation.replace(/[-\s]/g, '').toLowerCase()
+                );
+            }
+            
+            if (isCorrect) {
+                // Correct answer - bonus points calculation
+                let bonusPoints = Math.max(10, timer);
+                if (hintUsed) bonusPoints = Math.floor(bonusPoints * 0.7); // Reduce points if hint used
+                
+                score += bonusPoints;
+                correctAnswers++;
+                feedbackElement.textContent = `✅ Benar! Jawabannya adalah "${shuffledQuestions[currentQuestionIndex].answer}". (+${bonusPoints} poin)`;
+                feedbackElement.className = 'feedback correct';
+            } else {
+                // Wrong answer or time up
+                wrongAnswers++;
+                if (timeUp) {
+                    feedbackElement.textContent = `⏰ Waktu habis! Jawabannya adalah "${shuffledQuestions[currentQuestionIndex].answer}".`;
+                } else {
+                    feedbackElement.textContent = `❌ Salah! Jawabannya adalah "${shuffledQuestions[currentQuestionIndex].answer}".`;
+                }
+                feedbackElement.className = 'feedback incorrect';
+            }
+            
+            feedbackElement.classList.remove('hidden');
+            updateDisplay();
+            
+            // Auto-advance after 3 seconds
+            setTimeout(() => {
+                nextQuestion();
+            }, 3000);
+        }
+        
+        // Generate answer variations for flexible matching - Enhanced validation
+        function generateAnswerVariations(answer) {
+            const variations = [answer];
+            
+            // Add variations without hyphens and spaces
+            variations.push(answer.replace(/[-\s]/g, ''));
+            variations.push(answer.replace(/-/g, ' '));
+            variations.push(answer.replace(/\s+/g, ''));
+            
+            // Add common alternative spellings
+            const alternatives = {
+                'etuna': ['asetilena', 'etina'],
+                'propuna': ['propina'],
+                'butuna': ['butina'],
+                'pentuna': ['pentina'],
+                'heksuna': ['heksina'],
+                'metilpropana': ['isobutana'],
+                'dimetilpropana': ['neopentana'],
+                'etena': ['etilena'],
+                'propena': ['propilena']
+            };
+            
+            Object.keys(alternatives).forEach(key => {
+                if (answer.includes(key)) {
+                    alternatives[key].forEach(alt => {
+                        variations.push(answer.replace(key, alt));
+                    });
+                }
+            });
+            
+            return [...new Set(variations)]; // Remove duplicates
+        }
+        
+        // Skip question
+        function skipQuestion() {
+            if (!gameActive) return;
+            
+            clearInterval(timerInterval);
+            wrongAnswers++;
+            
+            const feedbackElement = document.getElementById('feedback');
+            feedbackElement.textContent = `⏭️ Dilewati! Jawabannya adalah "${shuffledQuestions[currentQuestionIndex].answer}".`;
+            feedbackElement.className = 'feedback incorrect';
+            feedbackElement.classList.remove('hidden');
+            
+            updateDisplay();
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+        
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correctAnswers;
+            document.getElementById('wrong').textContent = wrongAnswers;
+        }
+        
+        // End game
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('endScreen').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = score;
+            
+            const totalQuestions = shuffledQuestions.length;
+            const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            let message = '';
+            if (accuracy >= 90) {
+                message = `🏆 Luar biasa! Anda menguasai ${accuracy}% materi dengan sempurna!`;
+            } else if (accuracy >= 75) {
+                message = `🌟 Bagus sekali! Akurasi ${accuracy}% menunjukkan pemahaman yang solid!`;
+            } else if (accuracy >= 60) {
+                message = `👍 Cukup baik! Dengan akurasi ${accuracy}%, Anda perlu sedikit latihan lagi.`;
+            } else {
+                message = `💪 Jangan menyerah! Akurasi ${accuracy}% adalah langkah awal yang bagus!`;
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+        }
+        
+        // Show hint function
+        function showHint() {
+            if (hintUsed || !gameActive) return;
+            
+            const question = shuffledQuestions[currentQuestionIndex];
+            const hintElement = document.getElementById('hintDisplay');
+            
+            hintElement.textContent = `💡 ${question.hint}`;
+            hintElement.classList.remove('hidden');
+            
+            // Hide hint button and reduce score slightly
+            document.getElementById('hintBtn').style.display = 'none';
+            hintUsed = true;
+        }
+        
+        // Restart game
+        function restartGame() {
+            startGame();
+        }
+        
+        // Event listeners 
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enter key to submit
+            document.getElementById('answerInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitAnswer();
+                }
+            });
+            
+            // Prevent form submission
+            document.getElementById('answerInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                }
+            });
+        });
+        
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
